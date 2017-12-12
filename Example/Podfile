@@ -1,0 +1,14 @@
+use_frameworks!
+
+target 'XKFileManager_Example' do
+  pod 'XKFileManager', :path => '../'
+
+  target 'XKFileManager_Tests' do
+    inherit! :search_paths
+
+    pod 'Specta'
+  pod 'Expecta'
+  pod 'FBSnapshotTestCase'
+  pod 'Expecta+Snapshots'
+  end
+end
