@@ -9,7 +9,12 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-## Requirements
+## Method
+ 
+常见的文件管理方法, 包含文件操作:复制、移动、删除、存储等等 
+
+![](images/file.png)
+
 
 ## Installation
 
