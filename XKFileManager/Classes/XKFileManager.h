@@ -1,18 +1,15 @@
 //
 //  XKFileManager.h
-//  XKKit
+//  XKFileManager
 //
-//  Created by RyanMans on 2017/12/11.
-//  Copyright © 2017年 chonglou. All rights reserved.
+//  Created by ALLen、 LAS on 2019/8/1.
+//  Copyright © 2019 ALLen、 LAS. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**›
- 文件管理(常见的文件管理方法)
- */
 @interface XKFileManager : NSObject
 
 /**
@@ -20,46 +17,44 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return path
  */
-+ (NSString*)xk_HomeDirectory;
++ (NSString*)homeDirectory;
 
 /**
  *  获取Library目录(NSLibraryDirectory)
  *
  *  @return path
  */
-+ (NSString*)xk_LibraryDirectory;
++ (NSString*)libraryDirectory;
 
 /**
  *  获取Caches目录路径(NSCachesDirectory)
  *
  *  @return path
  */
-
-+ (NSString*)xk_CachesDirectory;
++ (NSString*)cachesDirectory;
 
 /**
  获取Document目录路径(NSDocumentDirectory)
-
+ 
  @return path
  */
-+ (NSString*)xk_DocumentDirectory;
-
++ (NSString*)documentDirectory;
 
 /**
  获取Temporary目录路径(NSTemporaryDirectory)
  
  @return path
  */
-+ (NSString*)xk_TemporaryDirectory;
++ (NSString*)temporaryDirectory;
 
 /**
  获取NSBundle资源路径
-
- @param resource 资源名称
- @param type 资源类型
+ 
+ @param name 资源名称
+ @param ext  资源类型
  @return path
  */
-+ (NSString*)xk_MainBundleWithResource:(NSString *)resource ofType:(NSString *)type;
++ (NSString *)pathForResource:(NSString *)name ofType:(NSString *)ext;
 
 /**
  获取沙盒主目录路径NSHomeDirectory()下 某文件目录路径
@@ -67,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileName 文件名称
  @return path
  */
-+ (NSString*)xk_AppendingHomeDirectory:(NSString*)fileName;
++ (NSString*)homeDirectoryByAppendingPathComponent:(NSString*)fileName;
 
 /**
  获取Library目录路径 NSLibraryDirectory[0]，某文件目录路径
@@ -75,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileName 文件名称
  @return path
  */
-+ (NSString*)xk_AppendingLibraryDirectory:(NSString*)fileName;
++ (NSString*)libraryDirectoryByAppendingPathComponent:(NSString*)fileName;
 
 /**
  获取Caches目录路径 NSCachesDirectory[0]，某文件目录路径
@@ -83,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileName 文件名称
  @return path
  */
-+ (NSString*)xk_AppendingCachesDirectory:(NSString*)fileName;
++ (NSString*)cachesDirectoryByAppendingPathComponent:(NSString*)fileName;
 
 /**
  获取Document目录路径 NSDocumentDirectory[0]，某文件目录路径
@@ -91,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileName 文件名称
  @return path
  */
-+ (NSString*)xk_AppendingDocumentDirectory:(NSString*)fileName;
++ (NSString*)documentDirectoryByAppendingPathComponent:(NSString*)fileName;
 
 /**
  获取temp 目录路径  NSTemporaryDirectory(),某文件目录路径
@@ -99,50 +94,50 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileName 文件名称
  @return path
  */
-+ (NSString*)xk_AppendingTemporaryDirectory:(NSString*)fileName;
++ (NSString*)temporaryDirectoryByAppendingPathComponent:(NSString*)fileName;
 
-#pragma mark - fm
-
-/**
- 获取某路径下的所有子路径名
-
- @param path  文件路径
- @return array
- */
-+ (nullable NSArray<NSString *> *)xk_SubpathsAtPath:(NSString*)path;
-
-/**
- 获取文件路径下的二进制数据
-
- @param path 文件路径
- @return data
- */
-+ (nullable NSData*)xk_ContentsAtPath:(NSString*)path;
+#pragma mark - fm操作
 
 /**
  判断文件路径是否存在
-
+ 
  @param path 文件路径
  @return yes/no
  */
-+ (BOOL)xk_FileExistsAtPath:(NSString*)path;
++ (BOOL)fileExistsAtPath:(NSString*)path;
+
+/**
+ 获取某路径下的所有子路径名
+ 
+ @param path  文件路径
+ @return array
+ */
++ (nullable NSArray<NSString *> *)subpathsAtPath:(NSString*)path;
+
+/**
+ 获取文件路径下的二进制数据
+ 
+ @param path 文件路径
+ @return data
+ */
++ (nullable NSData*)contentsAtPath:(NSString*)path;
 
 /**
  创建文件目录
-
+ 
  @param path 文件路径
  @return yes/no
  */
-+ (BOOL)xk_CreateDirectoryAtPath:(NSString*)path;
++ (BOOL)createDirectoryAtPath:(NSString*)path;
 
 /**
  重命名或者移动一个文件（to不能是已存在的）
-
+ 
  @param srcPath 旧路径
  @param dstPath  新路径
  @return yes/no
  */
-+ (BOOL)xk_MoveItemAtPath:(NSString*)srcPath toPath:(NSString *)dstPath;
++ (BOOL)moveItemAtPath:(NSString*)srcPath toPath:(NSString *)dstPath;
 
 /**
  重命名或者复制一个文件（to不能是已存在的）
@@ -151,40 +146,40 @@ NS_ASSUME_NONNULL_BEGIN
  @param dstPath  新路径
  @return yes/no
  */
-+ (BOOL)xk_CopyItemAtPath:(NSString*)srcPath toPath:(NSString *)dstPath;
++ (BOOL)copyItemAtPath:(NSString*)srcPath toPath:(NSString *)dstPath;
 
 /**
  删除文件
-
+ 
  @param path 文件路径
  @return yes/no
  */
-+ (BOOL)xk_RemoveItemAtPath:(NSString*)path;
++ (BOOL)removeItemAtPath:(NSString*)path;
 
-#pragma mark - NSUserDefaults -
+#pragma mark - NSUserDefaults操作
 
 /**
  取值 NSUserDefaults
-
+ 
  @param key defaultName
  @return id
  */
-+ (id)xk_UserDefaultsObjectForKey:(NSString*)key;
++ (id)handleUserDefaultsObjectForKey:(NSString*)key;
 
 /**
  存值 NSUserDefaults
-
+ 
  @param Object id
  @param key defaultName
  */
-+ (void)xk_UserDefaultsSetObject:(id)Object forKey:(NSString *)key;
++ (void)handleUserDefaultsSetObject:(id)Object forKey:(NSString *)key;
 
 /**
  删值 NSUserDefaults
-
+ 
  @param key defaultName
  */
-+ (void)xk_UserDefaultsRemoveObjectForKey:(NSString *)key;
++ (void)handleUserDefaultsRemoveObjectForKey:(NSString*)key;
 
 @end
 

@@ -1,156 +1,159 @@
 //
 //  XKFileManager.m
-//  XKKit
+//  XKFileManager
 //
-//  Created by RyanMans on 2017/12/11.
-//  Copyright © 2017年 chonglou. All rights reserved.
+//  Created by ALLen、 LAS on 2019/8/1.
+//  Copyright © 2019 ALLen、 LAS. All rights reserved.
 //
 
 #import "XKFileManager.h"
 
 static NSFileManager *_fileManager;
-
 @implementation XKFileManager
 
-+ (void)initialize
-{
-    //文件管理对象
++ (void)initialize{
     _fileManager = [NSFileManager defaultManager];
 }
 
 //获取沙盒主目录路径
-+ (NSString*)xk_HomeDirectory{
++ (NSString *)homeDirectory{
     return NSHomeDirectory();
 }
 
 //获取Library目录
-+ (NSString*)xk_LibraryDirectory{
++ (NSString *)libraryDirectory{
     return [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) firstObject];
 }
 
 //获取Caches目录路径
-+ (NSString*)xk_CachesDirectory{
++ (NSString *)cachesDirectory{
     return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
 }
 
 //获取document目录路径
-+ (NSString*)xk_DocumentDirectory{
++ (NSString*)documentDirectory{
     return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
 }
 
 //获取temporary目录路径
-+ (NSString*)xk_TemporaryDirectory{
++ (NSString*)temporaryDirectory{
     return NSTemporaryDirectory();
 }
 
 //获取NSBundle文件资源路径
-+ (NSString*)xk_MainBundleWithResource:(NSString *)resource ofType:(NSString *)type{
-    return [[NSBundle mainBundle] pathForResource:resource ofType:type];
++ (NSString *)pathForResource:(NSString *)name ofType:(NSString *)ext{
+    return [[NSBundle mainBundle] pathForResource:name ofType:ext];
 }
 
 //获取沙盒主目录路径NSHomeDirectory()下 某文件目录路径
-+ (NSString*)xk_AppendingHomeDirectory:(NSString*)fileName{
-    return [[self xk_HomeDirectory] stringByAppendingPathComponent:fileName];
++ (NSString*)homeDirectoryByAppendingPathComponent:(NSString*)fileName{
+    return [[self homeDirectory] stringByAppendingPathComponent:fileName];
 }
 
 //获取Library目录路径 NSLibraryDirectory[0]，某文件目录路径
-+ (NSString*)xk_AppendingLibraryDirectory:(NSString*)fileName{
-    return [[self xk_LibraryDirectory] stringByAppendingPathComponent:fileName];
++ (NSString*)libraryDirectoryByAppendingPathComponent:(NSString*)fileName{
+    return [[self libraryDirectory] stringByAppendingPathComponent:fileName];
 }
 
 //获取Caches目录路径 NSCachesDirectory[0]，某文件目录路径
-+ (NSString*)xk_AppendingCachesDirectory:(NSString*)fileName{
-    return [[self xk_CachesDirectory] stringByAppendingPathComponent:fileName];
++ (NSString*)cachesDirectoryByAppendingPathComponent:(NSString*)fileName{
+    return [[self cachesDirectory] stringByAppendingPathComponent:fileName];
 }
 
 //获取Document目录路径 NSDocumentDirectory[0]，某文件目录路径
-+ (NSString*)xk_AppendingDocumentDirectory:(NSString*)fileName{
-    return [[self xk_DocumentDirectory] stringByAppendingPathComponent:fileName];
++ (NSString*)documentDirectoryByAppendingPathComponent:(NSString*)fileName{
+    return [[self documentDirectory] stringByAppendingPathComponent:fileName];
 }
 
 //获取temp 目录路径  NSTemporaryDirectory(),某文件目录路径
-+ (NSString*)xk_AppendingTemporaryDirectory:(NSString*)fileName{
-    return [[self xk_TemporaryDirectory] stringByAppendingPathComponent:fileName];
++ (NSString*)temporaryDirectoryByAppendingPathComponent:(NSString*)fileName{
+    return [[self temporaryDirectory] stringByAppendingPathComponent:fileName];
 }
 
-#pragma mark - fm
-
-//获取某路径下的所有子路径名
-+ (nullable NSArray<NSString *> *)xk_SubpathsAtPath:(NSString*)path{
-    
-    if (![self xk_FileExistsAtPath:path]) return nil;
-
-    return [_fileManager subpathsAtPath:path];
-}
-
-// 获取文件路径下的二进制数据
-+ (nullable NSData*)xk_ContentsAtPath:(NSString*)path{
-    
-    if (![self xk_FileExistsAtPath:path]) return nil;
-    
-    return [_fileManager contentsAtPath:path];
-}
+#pragma mark - fm操作
 
 //判断路径是否存在
-+ (BOOL)xk_FileExistsAtPath:(NSString*)path{
++ (BOOL)fileExistsAtPath:(NSString*)path{
     if (!path.length) return NO;
     return [_fileManager fileExistsAtPath:path];
 }
 
+//获取某路径下的所有子路径名
++ (nullable NSArray<NSString *> *)subpathsAtPath:(NSString*)path{
+    if ([self fileExistsAtPath:path]) {
+        return [_fileManager subpathsAtPath:path];
+    }
+    return nil;
+}
+
+// 获取文件路径下的二进制数据
++ (nullable NSData*)contentsAtPath:(NSString*)path{
+    if ([self fileExistsAtPath:path]) {
+        return [_fileManager contentsAtPath:path];
+    }
+    return nil;
+}
+
 //创建文件目录
-+ (BOOL)xk_CreateDirectoryAtPath:(NSString*)path{
-    
-    if ([self xk_FileExistsAtPath:path]) return YES;
-    return [_fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
++ (BOOL)createDirectoryAtPath:(NSString*)path{
+    if (![_fileManager fileExistsAtPath:path]) {
+        return [_fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return YES;
 }
 
 //重命名或者移动一个文件（to不能是已存在的）
-+ (BOOL)xk_MoveItemAtPath:(NSString*)srcPath toPath:(NSString *)dstPath{
-    
-    if ((srcPath.length && dstPath.length) == NO) return NO;
-    
-    if (![self xk_FileExistsAtPath:srcPath]) return NO;
-    
-    return [_fileManager moveItemAtPath:srcPath toPath:dstPath error:nil];
++ (BOOL)moveItemAtPath:(NSString*)srcPath toPath:(NSString *)dstPath{
+    if (srcPath.length && dstPath.length) {
+        if (![_fileManager fileExistsAtPath:srcPath]) {
+            return NO;
+        }
+        return [_fileManager moveItemAtPath:srcPath toPath:dstPath error:nil];
+    }
+    return NO;
 }
 
 //重命名或者复制一个文件（to不能是已存在的）
-+ (BOOL)xk_CopyItemAtPath:(NSString*)srcPath toPath:(NSString *)dstPath{
-    
-    if ((srcPath.length && dstPath.length) == NO) return NO;
-    
-    if (![self xk_FileExistsAtPath:srcPath]) return NO;
-    
-    return [_fileManager copyItemAtPath:srcPath toPath:dstPath error:nil];
++ (BOOL)copyItemAtPath:(NSString*)srcPath toPath:(NSString *)dstPath{
+    if (srcPath.length && dstPath.length) {
+        if (![_fileManager fileExistsAtPath:srcPath]) {
+            return NO;
+        }
+        return [_fileManager copyItemAtPath:srcPath toPath:dstPath error:nil];
+    }
+    return NO;
 }
 
 //删除文件
-+ (BOOL)xk_RemoveItemAtPath:(NSString*)path{
-    if (![self xk_FileExistsAtPath:path]) return NO;
-    return [_fileManager removeItemAtPath:path error:nil];
++ (BOOL)removeItemAtPath:(NSString*)path{
+    if ([_fileManager fileExistsAtPath:path]) {
+        return [_fileManager removeItemAtPath:path error:nil];
+    }
+    return NO;
 }
 
 #pragma mark - NSUserDefaults -
 
 //取值NSUserDefaults
-+ (id)xk_UserDefaultsObjectForKey:(NSString*)key{
-    if (!key.length) return nil;
-    return [[NSUserDefaults standardUserDefaults] objectForKey:key];
++ (id)handleUserDefaultsObjectForKey:(NSString *)key{
+    if (key.length) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    }
+    return nil;
 }
 
 //存值NSUserDefaults
-+ (void)xk_UserDefaultsSetObject:(id)Object forKey:(NSString *)key{
-    
-    if (!key.length) return;
-    
-    [[NSUserDefaults standardUserDefaults] setObject:Object forKey:key];
++ (void)handleUserDefaultsSetObject:(id)Object forKey:(NSString *)key{
+    if (key.length) {
+        [[NSUserDefaults standardUserDefaults] setObject:Object forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 //删值 NSUserDefaults
-+ (void)xk_UserDefaultsRemoveObjectForKey:(NSString *)key{
-    
-    if (!key.length) return;
-    
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
++ (void)handleUserDefaultsRemoveObjectForKey:(NSString *)key{
+    if (key.length) {
+        return [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+    }
 }
 @end
